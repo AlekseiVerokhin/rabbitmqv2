@@ -21,13 +21,13 @@ channel.queue_declare(queue=queue_name)
 
 
 # Привязываем очередь к exchange с определенными аргументами заголовков
-channel.queue_bind(exchange=exchange_name, queue=queue_name)
+channel.queue_bind(exchange=exchange_name, queue=queue_name,  routing_key='*.iam.#')
 
 # Текст сообщения для отправки
 message = 'This is a message with topic.'
 
 # Публикуем сообщение в exchange с указанными заголовками
-channel.basic_publish(exchange=exchange_name, routing_key='*.iam.#', body=message)
+channel.basic_publish(exchange=exchange_name, routing_key='new.iam.new.new', body=message)
 
 print(f"Sent: '{message}' with ")
 
