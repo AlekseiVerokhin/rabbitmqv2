@@ -1,0 +1,39 @@
+version: "3" # Specify the version of Docker Compose.
+
+services:
+
+  rabbit_mq:
+    image: rabbitmq:3.10.7-management # Use the RabbitMQ Docker image with the management plugin.
+    container_name: rabbit_mq # Assign a custom name to the RabbitMQ container.
+    hostname: rabbitmq # Set the hostname for the RabbitMQ container.
+    restart: always # Ensure that the container restarts automatically if it exits.
+    ports:
+        - '15672:15672' # Map the RabbitMQ management UI port to the host machine.
+    volumes:
+      - rabbit_mqdata:/usr/share/rabbitmq/data # Create a volume for RabbitMQ data storage.
+
+  producer:
+    build: producer # Build the 'producer' service using the Dockerfile in the 'producer' directory.
+  producer1:
+    build: producer1 # Build the 'producer' service using the Dockerfile in the 'producer2' directory.
+  producer2:
+    build: producer2 # Build the 'producer' service using the Dockerfile in the 'producer2' directory.
+  consumer:
+    build: consumer
+  consumer1:
+    build: consumer1
+  consumer2:
+    build: consumer2
+
+    depends_on:
+        - rabbit_mq # Specify that the 'producer' service depends on the 'rabbit_mq' service.
+    volumes:
+      - ./producer:/usr/src/app/producer # Mount the 'producer' code into the 'producer' service container.
+      - ./producer1:/usr/src/app/producer1 # Mount the 'producer' code into the 'producer' service container.
+      - ./producer2:/usr/src/app/producer2 # Mount the 'producer' code into the 'producer' service container.
+      - ./consumer:/usr/src/app/consumer 
+      - ./consumer1:/usr/src/app/consumer1 
+      - ./consumer2:/usr/src/app/consumer2
+volumes:
+    rabbit_mqdata:
+      driver: local # Define a local volume named 'rabbit_mqdata'.
